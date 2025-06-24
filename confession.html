@@ -36,7 +36,12 @@
 
         .buttons {
             display: flex;
-            gap: 30px;
+            flex-direction: column;
+            /* 关键修改：垂直排列按钮 */
+            gap: 20px;
+            /* 调整按钮间距 */
+            align-items: center;
+            /* 水平居中 */
             margin-top: 30px;
         }
 
@@ -47,6 +52,8 @@
             font-size: 1.1em;
             cursor: pointer;
             transition: all 0.3s;
+            min-width: 150px;
+            /* 固定按钮宽度避免文字过长变形 */
         }
 
         #acceptBtn {
@@ -58,8 +65,8 @@
             background: white;
             color: #ff69b4;
             border: 2px solid #ff69b4;
-            position: absolute;
-            /* 关键：允许按钮移动 */
+            position: relative;
+            /* 关键修改：改为相对定位（避免绝对定位导致重叠） */
         }
 
         .modal {
@@ -92,12 +99,11 @@
             我喜欢你，做我女朋友好不好！</p>
         <div class="buttons">
             <button class="btn" id="acceptBtn">我愿意！</button>
-            <br><br>
-            <button class="btn" id="rejectBtn">拒绝</button>
+            <button class="btn" id="rejectBtn">拒绝</button> <!-- 移除多余的<br>标签 -->
         </div>
     </div>
 
-    <!-- 成功提示模态框 -->
+    <!-- 成功提示模态框（未修改） -->
     <div class="modal" id="successModal">
         <h2>太好啦！❤️</h2>
         <p>从今天起，<br>
@@ -108,19 +114,20 @@
     </div>
 
     <script>
-        // 拒绝按钮移动逻辑
+        // 拒绝按钮移动逻辑（优化范围避免覆盖接受按钮）
         const rejectBtn = document.getElementById('rejectBtn');
         rejectBtn.addEventListener('mouseover', () => {
-            // 随机生成按钮位置（避免超出屏幕）
+            // 限制Y轴移动范围在接受按钮下方（避免覆盖）
+            const minY = document.getElementById('acceptBtn').offsetTop + document.getElementById('acceptBtn').offsetHeight + 30;
             const maxX = window.innerWidth - rejectBtn.offsetWidth - 20;
             const maxY = window.innerHeight - rejectBtn.offsetHeight - 20;
             const randomX = Math.floor(Math.random() * maxX);
-            const randomY = Math.floor(Math.random() * maxY);
+            const randomY = Math.max(minY, Math.floor(Math.random() * maxY)); // 确保Y坐标大于接受按钮底部
             rejectBtn.style.left = randomX + 'px';
             rejectBtn.style.top = randomY + 'px';
         });
 
-        // 接受按钮点击事件
+        // 接受按钮点击事件（未修改）
         document.getElementById('acceptBtn').addEventListener('click', () => {
             document.getElementById('successModal').style.display = 'block';
         });
